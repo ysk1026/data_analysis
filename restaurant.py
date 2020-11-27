@@ -1,4 +1,5 @@
 import pandas as pd
+from pandas import Series, DataFrame
 import numpy as np
 import matplotlib.pyplot as plt
 import re
@@ -52,20 +53,25 @@ print()
 chipo['choice_description'].fillna('Origin', inplace = True) # 해당 컬럼에 NaN값이 많아서 해당 값들을 Origin으로 변경한다
 print(f'Choice Description 내 NaN 값 변경 이후 : \n {chipo.head(5)}')
 
+
 num = 0
 for i in chipo['choice_description'] :
     # 알파벳과 ',' 그리고 공백을 제외하고 모두 지운다
     chipo['choice_description'][num] = re.sub(pattern='[^a-zA-Z,]', repl=' ', string=i)
     num += 1
-# print(chipo)
 
-print((chipo['choice_description'][4].split(','))[0])
+chipo['saurce'] = chipo['choice_description'].str.split(',').str[0]
+chipo['ingredients'] = chipo['choice_description'].str.split(',').str[1:]
+print(chipo)
+# print(len(chipo['ingredients'][0]))
+num = 0
+for ingredient in chipo['ingredients']:
+    if len(ingredient) == 0:
+        chipo['ingredients'][num] = 'Origin'
+    else:
+        chipo['ingredients'][num] = ','.join(ingredient)
+    num += 1
 
-# for choice in chipo['choice_description']:
-#     if choice == 'Origin':
-#         chipo['saurce'] = choice
-#         chipo['ingredient'] = choice
-#     else: 
-#         if len(choice) == 1:
-#             chipo['saurce'] = choice[0]
-#             chipo 
+chipo.drop(['choice_description'], axis='columns', inplace=True) 
+print(chipo)
+
