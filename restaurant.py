@@ -73,5 +73,12 @@ for ingredient in chipo['ingredients']:
     num += 1
 
 chipo.drop(['choice_description'], axis='columns', inplace=True) 
-print(chipo)
+# print(chipo)
 
+# 중복되는 데이터 합치기
+result_tmp = chipo.groupby(['item_name','saurce'])['ingredients'].value_counts()
+result_tmp = result_tmp.to_frame()
+# print(result_tmp)
+
+file_path='./data/chipotle_result.csv'
+result_tmp.to_csv(file_path, sep=',')
